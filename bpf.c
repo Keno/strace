@@ -617,7 +617,7 @@ END_BPF_CMD_DECODER(RVAL_DECODED)
 
 BEGIN_BPF_CMD_DECODER(BPF_PROG_QUERY)
 {
-	uint64_t prog_id_buf;
+	uint32_t prog_id_buf;
 
 	if (entering(tcp)) {
 		PRINT_FIELD_FD("{query={", attr, target_fd, tcp);
@@ -635,17 +635,10 @@ BEGIN_BPF_CMD_DECODER(BPF_PROG_QUERY)
 		return 0;
 	}
 
-	/*
-	 * The issue here is that we can't pass pointers bigger than
-	 * (our) kernel long ti print_array, so we opt out from decoding
-	 * the array.
-	 */
-	if (syserror(tcp) || attr.prog_ids > max_kaddr())
-		printaddr64(attr.prog_ids);
-	else
-		print_array(tcp, attr.prog_ids, attr.prog_cnt, &prog_id_buf,
-			    sizeof(prog_id_buf), umoven_or_printaddr,
-			    print_uint64_array_member, 0);
+	print_big_u64_addr(attr.prog_ids);
+	print_array(tcp, attr.prog_ids, attr.prog_cnt, &prog_id_buf,
+		    sizeof(prog_id_buf), umoven_or_printaddr,
+		    print_uint32_array_member, 0);
 
 	tprints(", prog_cnt=");
 	const uint32_t prog_cnt_entering = get_tcb_priv_ulong(tcp);
