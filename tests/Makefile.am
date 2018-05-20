@@ -93,6 +93,8 @@ check_PROGRAMS = $(PURE_EXECUTABLES) \
 	attach-p-cmd-cmd \
 	attach-p-cmd-p \
 	block_reset_raise_run \
+	bpf-success \
+	bpf-success-v \
 	caps-abbrev \
 	check_sigblock \
 	check_sigign \
@@ -216,6 +218,8 @@ STACKTRACE_TESTS =
 endif
 
 DECODER_TESTS = \
+	bpf-success.test \
+	bpf-success-v.test \
 	brk.test \
 	btrfs-v.test \
 	btrfs-vw.test \
